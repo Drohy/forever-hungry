@@ -273,6 +273,10 @@
   <div class="admin-header">
     <div class="admin-title">🛡️ Admin Panel</div>
     <div class="admin-subtitle">Order Management System</div>
+    <div style="margin-top: 1.5rem;">
+      <a href="track.html" style="background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.2); color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; font-size: 0.9rem; margin-right: 1rem;">📱 Customer Tracking</a>
+      <a href="solo.html" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; font-size: 0.9rem;">🏪 Back to Store</a>
+    </div>
   </div>
   
   <div class="admin-container">
@@ -298,7 +302,10 @@
     <div class="orders-section">
       <div class="section-title">
         📋 Order Management
-        <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+        <div>
+          <button class="refresh-btn" onclick="window.open('payment-api.html', '_blank')" style="margin-right: 1rem;">🔐 Payment API</button>
+          <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+        </div>
       </div>
       
       <div class="search-bar">
