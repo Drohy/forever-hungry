@@ -616,9 +616,12 @@
           <div class="cashapp-monitor">
             <div class="monitor-status">
               <div class="monitor-dot cashapp"></div>
-              <span>Monitoring for CashApp payment...</span>
+              <span>Awaiting manual CashApp verification...</span>
             </div>
-            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Payments are verified manually within 1 hour</div>
+            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">
+              <div id="cashappStatus">💡 Payments to $realmoneygettinnih are verified manually within 1 hour</div>
+              <div style="margin-top: 0.5rem;">📋 Make sure to include your Order ID in the payment note</div>
+            </div>
           </div>
         </div>
         
@@ -820,6 +823,7 @@
     }
     
     function startPaymentMonitoring(order) {
+      // Standard monitoring for all payment methods
       paymentMonitorInterval = setInterval(() => {
         checkForPayment(order);
       }, 30000);
@@ -874,13 +878,8 @@
     }
     
     function simulateCashAppCheck(order) {
-      const orderAge = Date.now() - new Date(order.timestamp).getTime();
-      const minutesElapsed = orderAge / (1000 * 60);
-      
-      if (minutesElapsed > 3 && Math.random() < 0.1) {
-        const fakeRef = 'CA' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        processPaymentDetection(order.orderId, fakeRef, 'cashapp');
-      }
+      // Manual verification - no automatic detection
+      console.log(`Manual CashApp verification required for order ${order.orderId}`);
     }
     
     function simulateApplePayCheck(order) {
