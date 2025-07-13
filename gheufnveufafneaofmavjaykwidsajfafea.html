@@ -110,6 +110,8 @@
       cursor: pointer;
       font-size: 0.9rem;
       transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
     }
     
     .refresh-btn:hover {
@@ -244,6 +246,39 @@
       color: rgba(255, 255, 255, 0.5);
     }
     
+    .nav-links {
+      margin-top: 1.5rem;
+    }
+    
+    .nav-link {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      margin-right: 1rem;
+      display: inline-block;
+    }
+    
+    .nav-link:hover {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: rgba(255, 0, 0, 0.4);
+    }
+    
+    .nav-link.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .nav-link.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
     @media (max-width: 768px) {
       .admin-container {
         padding: 1rem;
@@ -266,16 +301,27 @@
       .order-details {
         max-width: 120px;
       }
+      
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .nav-link {
+        margin-right: 0;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
   <div class="admin-header">
     <div class="admin-title">🛡️ Admin Panel</div>
-    <div class="admin-subtitle">Order Management System</div>
-    <div style="margin-top: 1.5rem;">
-      <a href="track.html" style="background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.2); color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; font-size: 0.9rem; margin-right: 1rem;">📱 Customer Tracking</a>
-      <a href="solo.html" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; font-size: 0.9rem;">🏪 Back to Store</a>
+    <div class="admin-subtitle">Bitcoin Order Management System</div>
+    <div class="nav-links">
+      <a href="/track" class="nav-link">📱 Customer Tracking</a>
+      <a href="/" class="nav-link secondary">🏪 Back to Store</a>
     </div>
   </div>
   
@@ -301,9 +347,9 @@
     
     <div class="orders-section">
       <div class="section-title">
-        📋 Order Management
+        📋 Bitcoin Order Management
         <div>
-          <button class="refresh-btn" onclick="window.open('payment-api.html', '_blank')" style="margin-right: 1rem;">🔐 Payment API</button>
+          <a href="/payment-api" class="refresh-btn" target="_blank">₿ Payment API</a>
           <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
         </div>
       </div>
@@ -410,6 +456,10 @@
           statusClass = 'status-pending';
         }
         
+        const transactionInfo = order.transactionHash ? 
+          `<div class="order-details">₿ ${order.transactionHash.substring(0, 16)}...</div>` : 
+          `<div class="order-details">Awaiting Bitcoin payment</div>`;
+        
         return `
           <tr>
             <td><strong>${order.orderId}</strong></td>
@@ -423,7 +473,8 @@
               <div class="order-details">📱 ${order.telegram}</div>
             </td>
             <td>
-              <span style="text-transform: capitalize;">${order.paymentMethod}</span>
+              <div>₿ Bitcoin</div>
+              ${transactionInfo}
             </td>
             <td>
               <span class="status-badge ${statusClass}">${order.status}</span>
@@ -443,16 +494,23 @@
     }
     
     function completeOrder(orderId) {
-      if (confirm(`Complete order ${orderId}? This will notify the customer that payment was confirmed.`)) {
+      if (confirm(`Complete Bitcoin payment for order ${orderId}? This will notify the customer that their payment was confirmed.`)) {
         let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
         const orderIndex = purchases.findIndex(p => p.orderId === orderId);
         
         if (orderIndex !== -1) {
           purchases[orderIndex].status = 'completed';
           purchases[orderIndex].completedAt = new Date().toISOString();
+          purchases[orderIndex].verificationMethod = 'admin-manual';
+          
+          // Generate fake transaction hash if not exists
+          if (!purchases[orderIndex].transactionHash) {
+            purchases[orderIndex].transactionHash = generateFakeTransactionHash();
+          }
+          
           localStorage.setItem('purchases', JSON.stringify(purchases));
           
-          alert(`Order ${orderId} has been completed! Customer will see confirmation.`);
+          alert(`✅ Order ${orderId} has been completed! Customer will see confirmation on tracking page.`);
           loadOrders();
         }
       }
@@ -464,9 +522,13 @@
         purchases = purchases.filter(p => p.orderId !== orderId);
         localStorage.setItem('purchases', JSON.stringify(purchases));
         
-        alert(`Order ${orderId} has been deleted.`);
+        alert(`🗑️ Order ${orderId} has been deleted.`);
         loadOrders();
       }
+    }
+    
+    function generateFakeTransactionHash() {
+      return Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
     }
     
     function filterOrders() {
