@@ -255,60 +255,36 @@
       color: rgba(255, 255, 255, 0.4);
     }
     
-    .payment-methods {
-      display: grid;
-      gap: 1rem;
-    }
-    
-    .payment-option {
-      position: relative;
-    }
-    
-    .payment-radio {
-      position: absolute;
-      opacity: 0;
-      cursor: pointer;
-    }
-    
-    .payment-label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem;
+    .payment-method-card {
       background: rgba(0, 0, 0, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      cursor: pointer;
+      padding: 2rem;
+      margin-bottom: 2rem;
       transition: all 0.3s ease;
-      font-weight: 500;
     }
     
-    .payment-radio:checked + .payment-label {
-      border-color: rgba(255, 0, 0, 0.4);
-      background: rgba(255, 0, 0, 0.05);
-      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
-    }
-    
-    .payment-label:hover {
+    .payment-method-card:hover {
       border-color: rgba(255, 0, 0, 0.2);
       background: rgba(255, 0, 0, 0.02);
     }
     
-    .payment-info {
+    .payment-method-header {
       display: flex;
       align-items: center;
       gap: 1rem;
+      margin-bottom: 1.5rem;
     }
     
     .payment-icon {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       background: #fff;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       padding: 8px;
     }
     
@@ -319,93 +295,79 @@
       border-radius: 8px;
     }
     
-    .payment-details {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .payment-name {
-      font-size: 1rem;
+    .payment-details h3 {
+      font-size: 1.3rem;
       font-weight: 600;
       color: #fff;
+      margin-bottom: 0.3rem;
     }
     
-    .payment-desc {
-      font-size: 0.8rem;
+    .payment-details p {
+      font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.6);
     }
     
-    .radio-check {
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-    
-    .payment-radio:checked + .payment-label .radio-check {
-      border-color: #ff0000;
-      background: #ff0000;
-    }
-    
-    .payment-radio:checked + .payment-label .radio-check::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      border-radius: 50%;
-    }
-    
-    .crypto-options {
-      display: none;
-      margin-top: 1rem;
+    .payment-address {
+      background: rgba(0, 0, 0, 0.5);
       padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 16px;
-      border: 1px solid rgba(255, 0, 0, 0.1);
-    }
-    
-    .crypto-currency {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.8rem;
       border-radius: 12px;
-      transition: background 0.3s ease;
-      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      margin: 1rem 0;
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      position: relative;
     }
     
-    .crypto-currency:hover {
-      background: rgba(255, 0, 0, 0.05);
-    }
-    
-    .crypto-currency.selected {
+    .copy-btn {
       background: rgba(255, 0, 0, 0.1);
       border: 1px solid rgba(255, 0, 0, 0.2);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
     }
     
-    .crypto-icon {
-      width: 24px;
-      height: 24px;
+    .copy-btn:hover {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: rgba(255, 0, 0, 0.4);
+    }
+    
+    .payment-warning {
+      background: rgba(255, 165, 0, 0.1);
+      border: 1px solid rgba(255, 165, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #ffab00;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    .qr-section {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+    
+    .qr-code {
+      width: 180px;
+      height: 180px;
       background: #fff;
-      border-radius: 50%;
+      border-radius: 12px;
+      margin: 0 auto 1rem auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
-      padding: 4px;
-    }
-    
-    .crypto-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 50%;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.9rem;
     }
     
     .order-summary {
@@ -542,7 +504,7 @@
   
   <header>
     <div class="header-content">
-      <a href="solo.html" class="back-btn">← Back to Store</a>
+      <a href="/" class="back-btn">← Back to Store</a>
       <div class="main-title">🛒 Checkout</div>
     </div>
   </header>
@@ -573,73 +535,28 @@
       
       <div class="form-section">
         <h3 class="section-title">Payment Method</h3>
-        <div class="payment-methods">
-          <div class="payment-option">
-            <input type="radio" id="cashapp" name="payment" value="cashapp" class="payment-radio">
-            <label for="cashapp" class="payment-label">
-              <div class="payment-info">
-                <div class="payment-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-cash-app-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-brand-vol-5-pack-logos-icons-2945082.png" alt="CashApp">
-                </div>
-                <div class="payment-details">
-                  <div class="payment-name">CashApp Pay</div>
-                  <div class="payment-desc">Fast & secure mobile payment</div>
-                </div>
-              </div>
-              <div class="radio-check"></div>
-            </label>
-          </div>
-          
-          <div class="payment-option">
-            <input type="radio" id="applepay" name="payment" value="applepay" class="payment-radio">
-            <label for="applepay" class="payment-label">
-              <div class="payment-info">
-                <div class="payment-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-apple-pay-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-brand-vol-7-pack-logos-icons-3030179.png" alt="Apple Pay">
-                </div>
-                <div class="payment-details">
-                  <div class="payment-name">Apple Pay</div>
-                  <div class="payment-desc">Touch ID & Face ID supported</div>
-                </div>
-              </div>
-              <div class="radio-check"></div>
-            </label>
-          </div>
-          
-          <div class="payment-option">
-            <input type="radio" id="crypto" name="payment" value="crypto" class="payment-radio">
-            <label for="crypto" class="payment-label">
-              <div class="payment-info">
-                <div class="payment-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Cryptocurrency">
-                </div>
-                <div class="payment-details">
-                  <div class="payment-name">Cryptocurrency</div>
-                  <div class="payment-desc">Bitcoin, Ethereum, USDT</div>
-                </div>
-              </div>
-              <div class="radio-check"></div>
-            </label>
-            <div class="crypto-options" id="cryptoOptions">
-              <div class="crypto-currency" data-crypto="btc">
-                <div class="crypto-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Bitcoin">
-                </div>
-                <span>Bitcoin (BTC)</span>
-              </div>
-              <div class="crypto-currency" data-crypto="eth">
-                <div class="crypto-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-ethereum-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747673.png" alt="Ethereum">
-                </div>
-                <span>Ethereum (ETH)</span>
-              </div>
-              <div class="crypto-currency" data-crypto="usdt">
-                <div class="crypto-icon">
-                  <img src="https://cdn.iconscout.com/icon/free/png-256/free-tether-logo-icon-download-in-svg-png-gif-file-formats--usdt-cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747675.png" alt="Tether">
-                </div>
-                <span>Tether (USDT)</span>
-              </div>
+        <div class="payment-method-card">
+          <div class="payment-method-header">
+            <div class="payment-icon">
+              <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Bitcoin">
             </div>
+            <div class="payment-details">
+              <h3>Bitcoin Payment</h3>
+              <p>Secure blockchain payment - Auto-verified within 10 minutes</p>
+            </div>
+          </div>
+          
+          <div class="payment-address" id="btcAddress">bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul</div>
+          
+          <div class="payment-warning">
+            ⚠️ Send the EXACT amount shown in the order summary below. Our system automatically detects payments to this address.
+          </div>
+          
+          <button class="copy-btn" onclick="copyToClipboard('btcAddress')">📋 Copy Bitcoin Address</button>
+          
+          <div class="qr-section">
+            <div class="qr-code" id="qrCode">QR Code<br>Loading...</div>
+            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan with your Bitcoin wallet</div>
           </div>
         </div>
       </div>
@@ -651,26 +568,25 @@
           <span id="summaryPrice">$0.00</span>
         </div>
         <div class="summary-row">
-          <span>Processing Fee</span>
-          <span>$0.00</span>
+          <span>Bitcoin Network Fee</span>
+          <span>Included</span>
         </div>
         <div class="summary-total">
-          <span>Total</span>
+          <span>Total (USD)</span>
           <span id="totalPrice">$0.00</span>
         </div>
       </div>
       
-      <button class="complete-purchase-btn" id="completePurchaseBtn">Complete Purchase</button>
+      <button class="complete-purchase-btn" id="completePurchaseBtn">Place Order & Track Payment</button>
       
       <div class="security-notice">
-        🔒 Your payment information is secure and encrypted
+        🔒 Payments are monitored via blockchain API for instant verification
       </div>
     </div>
   </div>
   
   <script>
     let currentProduct = null;
-    let selectedCrypto = 'btc';
     
     function loadProductData() {
       console.log('Loading product data...');
@@ -705,18 +621,29 @@
           if (summaryPrice) summaryPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
           if (totalPrice) totalPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
           
+          // Generate QR code (simplified)
+          generateQRCode(currentProduct.price);
+          
           console.log('Product data loaded successfully');
           
         } catch (error) {
           console.error('Error parsing product data:', error);
           alert('Error loading product data: ' + error.message);
-          // Don't redirect, show error instead
         }
       } else {
         console.warn('No product data found');
         alert('No product selected. Redirecting to store...');
-        window.location.href = 'solo.html';
+        window.location.href = '/';
       }
+    }
+    
+    function generateQRCode(amount) {
+      const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
+      const qrElement = document.getElementById('qrCode');
+      
+      // In a real implementation, you'd use a QR code library
+      // For now, we'll show a placeholder
+      qrElement.innerHTML = `<div style="font-size: 0.8rem; padding: 1rem;">Bitcoin Address<br>${address.substring(0, 20)}...<br><strong>$${amount}</strong></div>`;
     }
     
     function generateOrderId() {
@@ -732,7 +659,9 @@
         telegram: telegram,
         timestamp: new Date().toISOString(),
         status: 'pending',
-        expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        btcAddress: 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul',
+        expectedAmount: product.price
       };
       
       try {
@@ -747,59 +676,43 @@
       }
     }
     
-    function processCashAppPayment(orderId, amount, email, telegram) {
-      const cashAppUrl = `https://cash.app/$realmoneygettinnih/${amount}`;
+    function processBitcoinPayment(orderId, amount, email, telegram) {
+      const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
       
-      alert(`Order #${orderId} created!\n\n💰 Payment Instructions:\n\n1. Send ${amount} to: $realmoneygettinnih\n2. IMPORTANT: Include "${orderId}" in the payment note\n3. Payment will be auto-verified within 60 seconds\n\nOpening CashApp now...`);
-      
-      window.open(cashAppUrl, '_blank');
+      alert(`Order #${orderId} created!\n\n₿ Bitcoin Payment Instructions:\n\n1. Send exactly $${amount} USD worth of Bitcoin to:\n${address}\n\n2. Payment will be automatically verified within 10 minutes\n\n3. You'll receive real-time updates on the tracking page\n\nRedirecting to order tracking now...`);
       
       setTimeout(() => {
-        // Redirect to tracking page
-        window.location.href = `track.html?order=${orderId}`;
+        window.location.href = `/track?order=${orderId}`;
       }, 3000);
     }
     
-    function processApplePayPayment(orderId, amount, email, telegram) {
-      alert(`Order #${orderId} created!\n\nApple Pay integration coming soon.\n\nFor now, please use:\n- CashApp: $realmoneygettinnih (include "${orderId}" in note)\n- Bitcoin: bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul (include "${orderId}" in memo)\n\nRedirecting to order tracking...`);
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
       
-      setTimeout(() => {
-        window.location.href = `track.html?order=${orderId}`;
-      }, 3000);
-    }
-    
-    function processCryptoPayment(orderId, amount, email, telegram, currency) {
-      let address = '';
-      let network = '';
-      
-      switch(currency) {
-        case 'btc':
-          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
-          network = 'Bitcoin';
-          break;
-        case 'eth':
-          address = 'Coming Soon';
-          network = 'Ethereum';
-          break;
-        case 'usdt':
-          address = 'Coming Soon';
-          network = 'USDT (TRC20)';
-          break;
-        default:
-          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
-          network = 'Bitcoin';
-      }
-      
-      if (address === 'Coming Soon') {
-        alert('This cryptocurrency is not yet supported. Please use Bitcoin or CashApp.');
-        return;
-      }
-      
-      alert(`Order #${orderId} created!\n\n₿ ${network} Payment Instructions:\n\nSend ${amount} USD worth of ${network} to:\n${address}\n\nIMPORTANT: Include "${orderId}" in the transaction memo\n\nPayment will be auto-verified within 2-10 minutes\n\nRedirecting to order tracking...`);
-      
-      setTimeout(() => {
-        window.location.href = `track.html?order=${orderId}`;
-      }, 4000);
+      navigator.clipboard.writeText(text).then(() => {
+        // Show feedback
+        const originalText = element.textContent;
+        element.textContent = 'Copied!';
+        element.style.color = '#00ff00';
+        element.style.background = 'rgba(0, 255, 0, 0.1)';
+        
+        setTimeout(() => {
+          element.textContent = originalText;
+          element.style.color = '';
+          element.style.background = '';
+        }, 2000);
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        alert('Address copied to clipboard!');
+      });
     }
     
     // Event listeners
@@ -807,45 +720,14 @@
       console.log('DOM loaded, initializing...');
       loadProductData();
       
-      // Crypto selection
-      document.getElementById('crypto').addEventListener('change', function() {
-        const cryptoOptions = document.getElementById('cryptoOptions');
-        if (this.checked) {
-          cryptoOptions.style.display = 'block';
-        }
-      });
-      
-      document.querySelectorAll('input[name="payment"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-          const cryptoOptions = document.getElementById('cryptoOptions');
-          if (this.value !== 'crypto') {
-            cryptoOptions.style.display = 'none';
-          }
-        });
-      });
-      
-      document.querySelectorAll('.crypto-currency').forEach(crypto => {
-        crypto.addEventListener('click', function() {
-          document.querySelectorAll('.crypto-currency').forEach(c => c.classList.remove('selected'));
-          this.classList.add('selected');
-          selectedCrypto = this.dataset.crypto;
-        });
-      });
-      
       // Complete purchase button
       document.getElementById('completePurchaseBtn').addEventListener('click', function() {
         console.log('Complete purchase button clicked');
         
-        const selectedPayment = document.querySelector('input[name="payment"]:checked');
         const email = document.getElementById('customerEmail').value.trim();
         const telegram = document.getElementById('customerTelegram').value.trim();
         
-        console.log('Form data:', { selectedPayment: selectedPayment?.value, email, telegram, currentProduct });
-        
-        if (!selectedPayment) {
-          alert('Please select a payment method');
-          return;
-        }
+        console.log('Form data:', { email, telegram, currentProduct });
         
         if (!email || !telegram) {
           alert('Please fill in all required fields');
@@ -860,28 +742,16 @@
         const orderId = generateOrderId();
         const amount = currentProduct.price;
         
-        console.log('Processing order:', orderId, amount, selectedPayment.value);
+        console.log('Processing order:', orderId, amount);
         
-        const tracked = trackPurchase(orderId, currentProduct, selectedPayment.value, email, telegram);
+        const tracked = trackPurchase(orderId, currentProduct, 'bitcoin', email, telegram);
         
         if (!tracked) {
           alert('Error creating order. Please try again.');
           return;
         }
         
-        switch(selectedPayment.value) {
-          case 'cashapp':
-            processCashAppPayment(orderId, amount, email, telegram);
-            break;
-          case 'applepay':
-            processApplePayPayment(orderId, amount, email, telegram);
-            break;
-          case 'crypto':
-            processCryptoPayment(orderId, amount, email, telegram, selectedCrypto);
-            break;
-          default:
-            alert('Payment method not supported yet');
-        }
+        processBitcoinPayment(orderId, amount, email, telegram);
       });
     });
   </script>
