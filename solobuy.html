@@ -750,23 +750,22 @@
     function processCashAppPayment(orderId, amount, email, telegram) {
       const cashAppUrl = `https://cash.app/$realmoneygettinnih/${amount}`;
       
-      alert(`Order #${orderId} created!\n\nSend $${amount} to: $realmoneygettinnih\n\nAfter payment, message @offdacrook on Telegram with:\n- Order ID: ${orderId}\n- Your email: ${email}\n- Your telegram: ${telegram}\n\nOpening CashApp...`);
+      alert(`Order #${orderId} created!\n\n💰 Payment Instructions:\n\n1. Send ${amount} to: $realmoneygettinnih\n2. IMPORTANT: Include "${orderId}" in the payment note\n3. Payment will be auto-verified within 60 seconds\n\nOpening CashApp now...`);
       
       window.open(cashAppUrl, '_blank');
       
       setTimeout(() => {
-        if (confirm('Payment sent? Click OK to track your order or Cancel to try again later.')) {
-          showOrderTrackingPage(orderId);
-        }
+        // Redirect to tracking page
+        window.location.href = `track.html?order=${orderId}`;
       }, 3000);
     }
     
     function processApplePayPayment(orderId, amount, email, telegram) {
-      alert(`Order #${orderId} created!\n\nApple Pay integration coming soon.\n\nFor now, please use:\n- CashApp: $realmoneygettinnih\n- Bitcoin: bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul\n\nMessage @offdacrook on Telegram with your order ID after payment.`);
+      alert(`Order #${orderId} created!\n\nApple Pay integration coming soon.\n\nFor now, please use:\n- CashApp: $realmoneygettinnih (include "${orderId}" in note)\n- Bitcoin: bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul (include "${orderId}" in memo)\n\nRedirecting to order tracking...`);
       
-      if (confirm('Would you like to track this order?')) {
-        showOrderTrackingPage(orderId);
-      }
+      setTimeout(() => {
+        window.location.href = `track.html?order=${orderId}`;
+      }, 3000);
     }
     
     function processCryptoPayment(orderId, amount, email, telegram, currency) {
@@ -796,194 +795,11 @@
         return;
       }
       
-      const cryptoModal = document.createElement('div');
-      cryptoModal.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: rgba(0,0,0,0.9); z-index: 10000; display: flex; 
-        align-items: center; justify-content: center; color: white;
-        font-family: inherit;
-      `;
+      alert(`Order #${orderId} created!\n\n₿ ${network} Payment Instructions:\n\nSend ${amount} USD worth of ${network} to:\n${address}\n\nIMPORTANT: Include "${orderId}" in the transaction memo\n\nPayment will be auto-verified within 2-10 minutes\n\nRedirecting to order tracking...`);
       
-      cryptoModal.innerHTML = `
-        <div style="background: linear-gradient(145deg, rgba(26, 26, 26, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%); 
-                    border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 20px; 
-                    padding: 2rem; max-width: 500px; text-align: center;">
-          <h3 style="color: #ff0000; margin-bottom: 1rem;">Order #${orderId}</h3>
-          <p style="margin-bottom: 1rem;">Send <strong>$${amount} USD worth of ${network}</strong> to:</p>
-          <div style="background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 10px; 
-                      margin: 1rem 0; word-break: break-all; font-family: monospace; font-size: 0.9rem;">
-            ${address}
-          </div>
-          <button onclick="navigator.clipboard.writeText('${address}'); alert('Address copied!')" 
-                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
-                         border-radius: 8px; margin: 0.5rem; cursor: pointer;">
-            Copy Address
-          </button>
-          <p style="font-size: 0.9rem; margin: 1rem 0; color: rgba(255,255,255,0.8);">
-            After sending payment, message <strong>@offdacrook</strong> on Telegram with:
-            <br>• Order ID: ${orderId}
-            <br>• Transaction hash
-            <br>• Your email: ${email}
-          </p>
-          <button onclick="this.parentElement.parentElement.remove()" 
-                  style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); 
-                         padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; margin: 0.5rem;">
-            Close
-          </button>
-          <button onclick="this.parentElement.parentElement.remove(); showOrderTrackingPage('${orderId}')" 
-                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
-                         border-radius: 8px; cursor: pointer; margin: 0.5rem;">
-            Track Order
-          </button>
-        </div>
-      `;
-      
-      document.body.appendChild(cryptoModal);
-    }
-    
-    function showOrderTrackingPage(orderId) {
-      document.body.innerHTML = `
-        <div style="min-height: 100vh; background: radial-gradient(ellipse at center, #1a0a0a 0%, #000 70%); 
-                    color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center;">
-          <div style="text-align: center; max-width: 600px; padding: 2rem;">
-            <div style="width: 80px; height: 80px; margin: 0 auto 2rem; border: 4px solid rgba(255,0,0,0.3); 
-                        border-top: 4px solid #ff0000; border-radius: 50%; animation: spin 2s linear infinite;"></div>
-            <h1 style="font-size: 2rem; margin-bottom: 1rem; background: linear-gradient(135deg, #ff0000 0%, #ff6b6b 100%);
-                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-              Processing Order #${orderId}
-            </h1>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; color: rgba(255,255,255,0.8);">
-              Waiting for payment confirmation...
-            </p>
-            <div style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); 
-                        border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem;">
-              <p style="margin-bottom: 1rem;">✅ Payment sent to $realmoneygettinnih</p>
-              <p style="margin-bottom: 1rem;">📱 Message @offdacrook on Telegram with Order ID</p>
-              <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
-                Order will auto-cancel in <span id="timeLeft">60:00</span> if not confirmed
-              </p>
-            </div>
-            <button onclick="window.location.href='solo.html'" 
-                    style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); 
-                           color: white; padding: 0.8rem 2rem; border-radius: 12px; cursor: pointer; font-family: inherit;">
-              Back to Store
-            </button>
-          </div>
-        </div>
-        <style>
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        </style>
-      `;
-      
-      startOrderTracking(orderId);
-    }
-    
-    function startOrderTracking(orderId) {
-      const startTime = Date.now();
-      const duration = 60 * 60 * 1000; // 1 hour
-      
-      const interval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const remaining = duration - elapsed;
-        
-        if (remaining <= 0) {
-          clearInterval(interval);
-          deleteExpiredOrder(orderId);
-          showOrderExpired();
-          return;
-        }
-        
-        // Update countdown
-        const minutes = Math.floor(remaining / 60000);
-        const seconds = Math.floor((remaining % 60000) / 1000);
-        const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        const timeElement = document.getElementById('timeLeft');
-        if (timeElement) {
-          timeElement.textContent = timeDisplay;
-        }
-        
-        // Check if order is completed
-        try {
-          const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-          const order = purchases.find(p => p.orderId === orderId);
-          
-          if (order && order.status === 'completed') {
-            clearInterval(interval);
-            showOrderCompleted(orderId);
-          }
-        } catch (error) {
-          console.error('Error checking order status:', error);
-        }
-      }, 1000);
-    }
-    
-    function deleteExpiredOrder(orderId) {
-      try {
-        let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-        purchases = purchases.filter(p => p.orderId !== orderId);
-        localStorage.setItem('purchases', JSON.stringify(purchases));
-      } catch (error) {
-        console.error('Error deleting expired order:', error);
-      }
-    }
-    
-    function showOrderExpired() {
-      document.body.innerHTML = `
-        <div style="min-height: 100vh; background: radial-gradient(ellipse at center, #1a0a0a 0%, #000 70%); 
-                    color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center;">
-          <div style="text-align: center; max-width: 600px; padding: 2rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">⏰</div>
-            <h1 style="font-size: 2rem; margin-bottom: 1rem; color: #ff6b6b;">Order Expired</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; color: rgba(255,255,255,0.8);">
-              Your order was not confirmed within 1 hour and has been automatically cancelled.
-            </p>
-            <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.6);">
-              Please place a new order if you still want to purchase.
-            </p>
-            <button onclick="window.location.href='solo.html'" 
-                    style="background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); border: none; 
-                           color: white; padding: 1rem 2rem; border-radius: 12px; cursor: pointer; 
-                           font-family: inherit; font-weight: 600;">
-              Back to Store
-            </button>
-          </div>
-        </div>
-      `;
-    }
-    
-    function showOrderCompleted(orderId) {
-      document.body.innerHTML = `
-        <div style="min-height: 100vh; background: radial-gradient(ellipse at center, #1a0a0a 0%, #000 70%); 
-                    color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center;">
-          <div style="text-align: center; max-width: 600px; padding: 2rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
-            <h1 style="font-size: 2rem; margin-bottom: 1rem; background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
-                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-              Order Completed!
-            </h1>
-            <p style="font-size: 1.1rem; margin-bottom: 1rem; color: rgba(255,255,255,0.8);">
-              Order #${orderId} has been confirmed and processed.
-            </p>
-            <div style="background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.2); 
-                        border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem;">
-              <p style="margin-bottom: 0.5rem;">✅ Payment confirmed</p>
-              <p style="margin-bottom: 0.5rem;">📦 Product will be delivered to your Telegram</p>
-              <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
-                Expect delivery within 24 hours
-              </p>
-            </div>
-            <button onclick="window.location.href='solo.html'" 
-                    style="background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); border: none; 
-                           color: white; padding: 1rem 2rem; border-radius: 12px; cursor: pointer; 
-                           font-family: inherit; font-weight: 600;">
-              Back to Store
-            </button>
-          </div>
-        </div>
-      `;
+      setTimeout(() => {
+        window.location.href = `track.html?order=${orderId}`;
+      }, 4000);
     }
     
     // Event listeners
