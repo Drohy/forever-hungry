@@ -110,6 +110,7 @@
       font-weight: 500;
       transition: all 0.3s ease;
       font-size: 0.9rem;
+      cursor: pointer;
     }
     
     .back-btn:hover {
@@ -383,6 +384,11 @@
       background: rgba(255, 0, 0, 0.05);
     }
     
+    .crypto-currency.selected {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+    
     .crypto-icon {
       width: 24px;
       height: 24px;
@@ -544,14 +550,12 @@
   <div class="checkout-container">
     <div class="product-summary">
       <div class="product-image">
-        <img id="productImage" src="" alt="">
+        <img id="productImage" src="" alt="" onerror="this.style.display='none'">
       </div>
-      <div class="product-title" id="productTitle"></div>
-      <div class="product-price" id="productPrice"></div>
-      <div class="product-description" id="productDescription"></div>
-      <div class="product-includes">
-        <span id="productIncludes"></span>
-      </div>
+      <div class="product-title" id="productTitle">Loading...</div>
+      <div class="product-price" id="productPrice">$0</div>
+      <div class="product-description" id="productDescription">Loading product details...</div>
+      <div class="product-includes" id="productIncludes">Loading...</div>
     </div>
     
     <div class="checkout-form">
@@ -559,11 +563,11 @@
         <h3 class="section-title">Contact Information</h3>
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" placeholder="your@email.com" required>
+          <input type="email" id="customerEmail" class="form-input" placeholder="your@email.com" required>
         </div>
         <div class="form-group">
           <label class="form-label">Telegram Username (for delivery)</label>
-          <input type="text" class="form-input" placeholder="@yourusername" required>
+          <input type="text" id="customerTelegram" class="form-input" placeholder="@yourusername" required>
         </div>
       </div>
       
@@ -617,19 +621,19 @@
               <div class="radio-check"></div>
             </label>
             <div class="crypto-options" id="cryptoOptions">
-              <div class="crypto-currency">
+              <div class="crypto-currency" data-crypto="btc">
                 <div class="crypto-icon">
                   <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Bitcoin">
                 </div>
                 <span>Bitcoin (BTC)</span>
               </div>
-              <div class="crypto-currency">
+              <div class="crypto-currency" data-crypto="eth">
                 <div class="crypto-icon">
                   <img src="https://cdn.iconscout.com/icon/free/png-256/free-ethereum-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747673.png" alt="Ethereum">
                 </div>
                 <span>Ethereum (ETH)</span>
               </div>
-              <div class="crypto-currency">
+              <div class="crypto-currency" data-crypto="usdt">
                 <div class="crypto-icon">
                   <img src="https://cdn.iconscout.com/icon/free/png-256/free-tether-logo-icon-download-in-svg-png-gif-file-formats--usdt-cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747675.png" alt="Tether">
                 </div>
@@ -643,8 +647,8 @@
       <div class="order-summary">
         <h3 class="section-title">Order Summary</h3>
         <div class="summary-row">
-          <span id="summaryTitle"></span>
-          <span id="summaryPrice"></span>
+          <span id="summaryTitle">Loading...</span>
+          <span id="summaryPrice">$0.00</span>
         </div>
         <div class="summary-row">
           <span>Processing Fee</span>
@@ -652,11 +656,11 @@
         </div>
         <div class="summary-total">
           <span>Total</span>
-          <span id="totalPrice"></span>
+          <span id="totalPrice">$0.00</span>
         </div>
       </div>
       
-      <button class="complete-purchase-btn">Complete Purchase</button>
+      <button class="complete-purchase-btn" id="completePurchaseBtn">Complete Purchase</button>
       
       <div class="security-notice">
         🔒 Your payment information is secure and encrypted
@@ -666,35 +670,51 @@
   
   <script>
     let currentProduct = null;
+    let selectedCrypto = 'btc';
     
     function loadProductData() {
-      const productData = sessionStorage.getItem('selectedProduct');
+      console.log('Loading product data...');
+      
+      // Try localStorage first, then sessionStorage
+      let productData = localStorage.getItem('selectedProduct') || sessionStorage.getItem('selectedProduct');
+      
+      console.log('Raw product data:', productData);
       
       if (productData) {
         try {
           currentProduct = JSON.parse(productData);
+          console.log('Parsed product data:', currentProduct);
           
-          document.getElementById('productImage').src = currentProduct.image;
-          document.getElementById('productImage').alt = currentProduct.title;
-          document.getElementById('productTitle').textContent = currentProduct.title;
-          document.getElementById('productPrice').textContent = '
-</body>
-</html> + currentProduct.price;
-          document.getElementById('productDescription').innerHTML = currentProduct.description;
-          document.getElementById('productIncludes').textContent = '✅ Includes: ' + currentProduct.includes;
-          document.getElementById('summaryTitle').textContent = currentProduct.title;
-          document.getElementById('summaryPrice').textContent = '
-</body>
-</html> + currentProduct.price + '.00';
-          document.getElementById('totalPrice').textContent = '
-</body>
-</html> + currentProduct.price + '.00';
+          // Populate product information
+          const productImage = document.getElementById('productImage');
+          const productTitle = document.getElementById('productTitle');
+          const productPrice = document.getElementById('productPrice');
+          const productDescription = document.getElementById('productDescription');
+          const productIncludes = document.getElementById('productIncludes');
+          const summaryTitle = document.getElementById('summaryTitle');
+          const summaryPrice = document.getElementById('summaryPrice');
+          const totalPrice = document.getElementById('totalPrice');
+          
+          if (productImage) productImage.src = currentProduct.image || '';
+          if (productImage) productImage.alt = currentProduct.title || '';
+          if (productTitle) productTitle.textContent = currentProduct.title || 'Unknown Product';
+          if (productPrice) productPrice.textContent = '$' + (currentProduct.price || 0);
+          if (productDescription) productDescription.innerHTML = currentProduct.description || 'No description available';
+          if (productIncludes) productIncludes.textContent = '✅ Includes: ' + (currentProduct.includes || 'No details available');
+          if (summaryTitle) summaryTitle.textContent = currentProduct.title || 'Unknown Product';
+          if (summaryPrice) summaryPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
+          if (totalPrice) totalPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
+          
+          console.log('Product data loaded successfully');
           
         } catch (error) {
           console.error('Error parsing product data:', error);
-          window.location.href = 'solo.html';
+          alert('Error loading product data: ' + error.message);
+          // Don't redirect, show error instead
         }
       } else {
+        console.warn('No product data found');
+        alert('No product selected. Redirecting to store...');
         window.location.href = 'solo.html';
       }
     }
@@ -712,14 +732,113 @@
         telegram: telegram,
         timestamp: new Date().toISOString(),
         status: 'pending',
-        expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour from now
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
       };
       
-      let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-      purchases.push(purchaseData);
-      localStorage.setItem('purchases', JSON.stringify(purchases));
+      try {
+        let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+        purchases.push(purchaseData);
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+        console.log('Purchase tracked:', purchaseData);
+        return true;
+      } catch (error) {
+        console.error('Error tracking purchase:', error);
+        return false;
+      }
+    }
+    
+    function processCashAppPayment(orderId, amount, email, telegram) {
+      const cashAppUrl = `https://cash.app/$realmoneygettinnih/${amount}`;
       
-      console.log('Purchase tracked:', purchaseData);
+      alert(`Order #${orderId} created!\n\nSend $${amount} to: $realmoneygettinnih\n\nAfter payment, message @offdacrook on Telegram with:\n- Order ID: ${orderId}\n- Your email: ${email}\n- Your telegram: ${telegram}\n\nOpening CashApp...`);
+      
+      window.open(cashAppUrl, '_blank');
+      
+      setTimeout(() => {
+        if (confirm('Payment sent? Click OK to track your order or Cancel to try again later.')) {
+          showOrderTrackingPage(orderId);
+        }
+      }, 3000);
+    }
+    
+    function processApplePayPayment(orderId, amount, email, telegram) {
+      alert(`Order #${orderId} created!\n\nApple Pay integration coming soon.\n\nFor now, please use:\n- CashApp: $realmoneygettinnih\n- Bitcoin: bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul\n\nMessage @offdacrook on Telegram with your order ID after payment.`);
+      
+      if (confirm('Would you like to track this order?')) {
+        showOrderTrackingPage(orderId);
+      }
+    }
+    
+    function processCryptoPayment(orderId, amount, email, telegram, currency) {
+      let address = '';
+      let network = '';
+      
+      switch(currency) {
+        case 'btc':
+          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
+          network = 'Bitcoin';
+          break;
+        case 'eth':
+          address = 'Coming Soon';
+          network = 'Ethereum';
+          break;
+        case 'usdt':
+          address = 'Coming Soon';
+          network = 'USDT (TRC20)';
+          break;
+        default:
+          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
+          network = 'Bitcoin';
+      }
+      
+      if (address === 'Coming Soon') {
+        alert('This cryptocurrency is not yet supported. Please use Bitcoin or CashApp.');
+        return;
+      }
+      
+      const cryptoModal = document.createElement('div');
+      cryptoModal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.9); z-index: 10000; display: flex; 
+        align-items: center; justify-content: center; color: white;
+        font-family: inherit;
+      `;
+      
+      cryptoModal.innerHTML = `
+        <div style="background: linear-gradient(145deg, rgba(26, 26, 26, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%); 
+                    border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 20px; 
+                    padding: 2rem; max-width: 500px; text-align: center;">
+          <h3 style="color: #ff0000; margin-bottom: 1rem;">Order #${orderId}</h3>
+          <p style="margin-bottom: 1rem;">Send <strong>$${amount} USD worth of ${network}</strong> to:</p>
+          <div style="background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 10px; 
+                      margin: 1rem 0; word-break: break-all; font-family: monospace; font-size: 0.9rem;">
+            ${address}
+          </div>
+          <button onclick="navigator.clipboard.writeText('${address}'); alert('Address copied!')" 
+                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
+                         border-radius: 8px; margin: 0.5rem; cursor: pointer;">
+            Copy Address
+          </button>
+          <p style="font-size: 0.9rem; margin: 1rem 0; color: rgba(255,255,255,0.8);">
+            After sending payment, message <strong>@offdacrook</strong> on Telegram with:
+            <br>• Order ID: ${orderId}
+            <br>• Transaction hash
+            <br>• Your email: ${email}
+          </p>
+          <button onclick="this.parentElement.parentElement.remove()" 
+                  style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); 
+                         padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; margin: 0.5rem;">
+            Close
+          </button>
+          <button onclick="this.parentElement.parentElement.remove(); showOrderTrackingPage('${orderId}')" 
+                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
+                         border-radius: 8px; cursor: pointer; margin: 0.5rem;">
+            Track Order
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(cryptoModal);
     }
     
     function showOrderTrackingPage(orderId) {
@@ -787,20 +906,28 @@
         }
         
         // Check if order is completed
-        const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-        const order = purchases.find(p => p.orderId === orderId);
-        
-        if (order && order.status === 'completed') {
-          clearInterval(interval);
-          showOrderCompleted(orderId);
+        try {
+          const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+          const order = purchases.find(p => p.orderId === orderId);
+          
+          if (order && order.status === 'completed') {
+            clearInterval(interval);
+            showOrderCompleted(orderId);
+          }
+        } catch (error) {
+          console.error('Error checking order status:', error);
         }
       }, 1000);
     }
     
     function deleteExpiredOrder(orderId) {
-      let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-      purchases = purchases.filter(p => p.orderId !== orderId);
-      localStorage.setItem('purchases', JSON.stringify(purchases));
+      try {
+        let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+        purchases = purchases.filter(p => p.orderId !== orderId);
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+      } catch (error) {
+        console.error('Error deleting expired order:', error);
+      }
     }
     
     function showOrderExpired() {
@@ -859,168 +986,87 @@
       `;
     }
     
-    function processCashAppPayment(orderId, amount, email, telegram) {
-      const cashAppUrl = `https://cash.app/$offdacrook/${amount}`;
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing...');
+      loadProductData();
       
-      alert(`Order #${orderId} created!\n\nSend ${amount} to: $offdacrook\n\nAfter payment, message @offdacrook on Telegram with:\n- Order ID: ${orderId}\n- Your email: ${email}\n- Your telegram: ${telegram}\n\nOpening CashApp...`);
-      
-      window.open(cashAppUrl, '_blank');
-      
-      setTimeout(() => {
-        if (confirm('Payment sent? Click OK to confirm or Cancel to try again later.')) {
-          alert('Payment confirmed! You will receive your product within 24 hours via Telegram.');
-          window.location.href = 'solo.html';
-        }
-      }, 3000);
-    }
-    
-    function processApplePayPayment(orderId, amount, email, telegram) {
-      alert(`Order #${orderId} created!\n\nApple Pay integration coming soon.\n\nFor now, please use:\n- CashApp: $offdacrook\n- Bitcoin: bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul\n\nMessage @offdacrook on Telegram with your order ID after payment.`);
-    }
-    
-    function processCryptoPayment(orderId, amount, email, telegram, currency) {
-      let address = '';
-      let network = '';
-      
-      switch(currency) {
-        case 'btc':
-          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
-          network = 'Bitcoin';
-          break;
-        case 'eth':
-          address = 'Coming Soon';
-          network = 'Ethereum';
-          break;
-        case 'usdt':
-          address = 'Coming Soon';
-          network = 'USDT (TRC20)';
-          break;
-        default:
-          address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
-          network = 'Bitcoin';
-      }
-      
-      if (address === 'Coming Soon') {
-        alert('This cryptocurrency is not yet supported. Please use Bitcoin or CashApp.');
-        return;
-      }
-      
-      const cryptoModal = document.createElement('div');
-      cryptoModal.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: rgba(0,0,0,0.9); z-index: 10000; display: flex; 
-        align-items: center; justify-content: center; color: white;
-        font-family: inherit;
-      `;
-      
-      cryptoModal.innerHTML = `
-        <div style="background: linear-gradient(145deg, rgba(26, 26, 26, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%); 
-                    border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 20px; 
-                    padding: 2rem; max-width: 500px; text-align: center;">
-          <h3 style="color: #ff0000; margin-bottom: 1rem;">Order #${orderId}</h3>
-          <p style="margin-bottom: 1rem;">Send <strong>${amount} USD worth of ${network}</strong> to:</p>
-          <div style="background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 10px; 
-                      margin: 1rem 0; word-break: break-all; font-family: monospace; font-size: 0.9rem;">
-            ${address}
-          </div>
-          <button onclick="navigator.clipboard.writeText('${address}')" 
-                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
-                         border-radius: 8px; margin: 0.5rem; cursor: pointer;">
-            Copy Address
-          </button>
-          <p style="font-size: 0.9rem; margin: 1rem 0; color: rgba(255,255,255,0.8);">
-            After sending payment, message <strong>@offdacrook</strong> on Telegram with:
-            <br>• Order ID: ${orderId}
-            <br>• Transaction hash
-            <br>• Your email: ${email}
-          </p>
-          <button onclick="this.parentElement.parentElement.remove()" 
-                  style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); 
-                         padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; margin: 0.5rem;">
-            Close
-          </button>
-          <button onclick="window.location.href='solo.html'" 
-                  style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; 
-                         border-radius: 8px; cursor: pointer; margin: 0.5rem;">
-            Back to Store
-          </button>
-        </div>
-      `;
-      
-      document.body.appendChild(cryptoModal);
-    }
-    
-    document.addEventListener('DOMContentLoaded', loadProductData);
-    
-    document.getElementById('crypto').addEventListener('change', function() {
-      const cryptoOptions = document.getElementById('cryptoOptions');
-      if (this.checked) {
-        cryptoOptions.style.display = 'block';
-      }
-    });
-    
-    document.querySelectorAll('input[name="payment"]').forEach(radio => {
-      radio.addEventListener('change', function() {
+      // Crypto selection
+      document.getElementById('crypto').addEventListener('change', function() {
         const cryptoOptions = document.getElementById('cryptoOptions');
-        if (this.value !== 'crypto') {
-          cryptoOptions.style.display = 'none';
+        if (this.checked) {
+          cryptoOptions.style.display = 'block';
         }
       });
-    });
-    
-    document.querySelectorAll('.crypto-currency').forEach(crypto => {
-      crypto.addEventListener('click', function() {
-        document.querySelectorAll('.crypto-currency').forEach(c => c.style.background = '');
-        this.style.background = 'rgba(255, 0, 0, 0.1)';
-        this.dataset.selected = 'true';
-      });
-    });
-    
-    document.querySelector('.complete-purchase-btn').addEventListener('click', function() {
-      const selectedPayment = document.querySelector('input[name="payment"]:checked');
-      const email = document.querySelector('input[type="email"]').value;
-      const telegram = document.querySelector('input[placeholder="@yourusername"]').value;
       
-      if (!selectedPayment) {
-        alert('Please select a payment method');
-        return;
-      }
-      
-      if (!email || !telegram) {
-        alert('Please fill in all required fields');
-        return;
-      }
-      
-      if (!currentProduct) {
-        alert('Product data not found. Please go back and select a product.');
-        return;
-      }
-      
-      const orderId = generateOrderId();
-      const amount = currentProduct.price;
-      
-      trackPurchase(orderId, currentProduct, selectedPayment.value, email, telegram);
-      
-      switch(selectedPayment.value) {
-        case 'cashapp':
-          processCashAppPayment(orderId, amount, email, telegram);
-          break;
-        case 'applepay':
-          processApplePayPayment(orderId, amount, email, telegram);
-          break;
-        case 'crypto':
-          const selectedCrypto = document.querySelector('.crypto-currency[data-selected="true"]');
-          let cryptoType = 'btc';
-          if (selectedCrypto) {
-            const cryptoText = selectedCrypto.textContent.toLowerCase();
-            if (cryptoText.includes('ethereum')) cryptoType = 'eth';
-            else if (cryptoText.includes('tether')) cryptoType = 'usdt';
+      document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const cryptoOptions = document.getElementById('cryptoOptions');
+          if (this.value !== 'crypto') {
+            cryptoOptions.style.display = 'none';
           }
-          processCryptoPayment(orderId, amount, email, telegram, cryptoType);
-          break;
-        default:
-          alert('Payment method not supported yet');
-      }
+        });
+      });
+      
+      document.querySelectorAll('.crypto-currency').forEach(crypto => {
+        crypto.addEventListener('click', function() {
+          document.querySelectorAll('.crypto-currency').forEach(c => c.classList.remove('selected'));
+          this.classList.add('selected');
+          selectedCrypto = this.dataset.crypto;
+        });
+      });
+      
+      // Complete purchase button
+      document.getElementById('completePurchaseBtn').addEventListener('click', function() {
+        console.log('Complete purchase button clicked');
+        
+        const selectedPayment = document.querySelector('input[name="payment"]:checked');
+        const email = document.getElementById('customerEmail').value.trim();
+        const telegram = document.getElementById('customerTelegram').value.trim();
+        
+        console.log('Form data:', { selectedPayment: selectedPayment?.value, email, telegram, currentProduct });
+        
+        if (!selectedPayment) {
+          alert('Please select a payment method');
+          return;
+        }
+        
+        if (!email || !telegram) {
+          alert('Please fill in all required fields');
+          return;
+        }
+        
+        if (!currentProduct) {
+          alert('Product data not found. Please go back and select a product.');
+          return;
+        }
+        
+        const orderId = generateOrderId();
+        const amount = currentProduct.price;
+        
+        console.log('Processing order:', orderId, amount, selectedPayment.value);
+        
+        const tracked = trackPurchase(orderId, currentProduct, selectedPayment.value, email, telegram);
+        
+        if (!tracked) {
+          alert('Error creating order. Please try again.');
+          return;
+        }
+        
+        switch(selectedPayment.value) {
+          case 'cashapp':
+            processCashAppPayment(orderId, amount, email, telegram);
+            break;
+          case 'applepay':
+            processApplePayPayment(orderId, amount, email, telegram);
+            break;
+          case 'crypto':
+            processCryptoPayment(orderId, amount, email, telegram, selectedCrypto);
+            break;
+          default:
+            alert('Payment method not supported yet');
+        }
+      });
     });
   </script>
 </body>
