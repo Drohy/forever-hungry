@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Your Order - Sauce Lessons</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: radial-gradient(ellipse at center, #1a0a0a 0%, #000 70%);
+      color: #fff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+    }
+    
+    .header-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff0000 0%, #ff6b6b 50%, #ff0000 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+    
+    .search-section {
+      background: linear-gradient(145deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+      border: 1px solid rgba(255, 0, 0, 0.08);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+    }
+    
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .search-btn {
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #fff;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+    }
+    
+    .order-card {
+      background: linear-gradient(145deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
+      border: 1px solid rgba(255, 0, 0, 0.08);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .order-id {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ff0000;
+    }
+    
+    .order-status {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .status-pending {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffab00;
+      border: 1px solid rgba(255, 165, 0, 0.3);
+    }
+    
+    .status-processing {
+      background: rgba(0, 123, 255, 0.2);
+      color: #007bff;
+      border: 1px solid rgba(0, 123, 255, 0.3);
+    }
+    
+    .status-completed {
+      background: rgba(0, 255, 0, 0.2);
+      color: #00ff00;
+      border: 1px solid rgba(0, 255, 0, 0.3);
+    }
+    
+    .status-expired {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff4444;
+      border: 1px solid rgba(255, 0, 0, 0.3);
+    }
+    
+    .progress-section {
+      margin-bottom: 2rem;
+    }
+    
+    .progress-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    
+    .progress-line {
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      right: 25px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+    
+    .progress-line-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff0000, #ff4444);
+      width: 0%;
+      transition: width 1s ease;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+    }
+    
+    .step-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.5s ease;
+    }
+    
+    .step-circle.active {
+      background: linear-gradient(135deg, #ff0000, #ff4444);
+      border-color: #ff0000;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+    
+    .step-circle.completed {
+      background: linear-gradient(135deg, #00ff00, #00cc00);
+      border-color: #00ff00;
+      color: #fff;
+    }
+    
+    .step-label {
+      font-size: 0.9rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+    
+    .step-label.active {
+      color: #ff0000;
+      font-weight: 600;
+    }
+    
+    .step-label.completed {
+      color: #00ff00;
+      font-weight: 600;
+    }
+    
+    .payment-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .payment-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    
+    .payment-method {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .payment-address {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+    
+    .payment-note {
+      background: rgba(255, 165, 0, 0.1);
+      border: 1px solid rgba(255, 165, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .payment-note-title {
+      font-weight: 600;
+      color: #ffab00;
+      margin-bottom: 0.5rem;
+    }
+    
+    .payment-note-text {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    .copy-btn {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .copy-btn:hover {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: rgba(255, 0, 0, 0.4);
+    }
+    
+    .qr-section {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .qr-code {
+      width: 150px;
+      height: 150px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 auto 1rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+    }
+    
+    .timer-section {
+      background: rgba(255, 0, 0, 0.05);
+      border: 1px solid rgba(255, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .timer-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #ffab00;
+    }
+    
+    .countdown {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ff0000;
+      margin-bottom: 0.5rem;
+    }
+    
+    .timer-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    
+    .verification-section {
+      background: rgba(0, 123, 255, 0.1);
+      border: 1px solid rgba(0, 123, 255, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    
+    .verification-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 123, 255, 0.3);
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .success-section {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      display: none;
+    }
+    
+    .success-icon {
+      font-size: 4rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+    
+    .success-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+    
+    .success-message {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.5rem;
+    }
+    
+    .delivery-info {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .error-section {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .payment-section {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .order-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .progress-steps {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .progress-line {
+        display: none;
+      }
+      
+      .step-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-title">📱 Track Your Order</div>
+      <div class="header-subtitle">Real-Time Order Tracking</div>
+    </div>
+    
+    <div class="search-section">
+      <h3 style="margin-bottom: 1rem; color: rgba(255,255,255,0.9);">Enter Your Order ID</h3>
+      <input type="text" id="orderIdInput" class="search-input" placeholder="SL1704123456ABC" maxlength="20">
+      <br>
+      <button class="search-btn" onclick="trackOrder()">🔍 Track Order</button>
+    </div>
+    
+    <div class="error-section" id="errorSection">
+      <div style="font-size: 2rem; margin-bottom: 1rem;">❌</div>
+      <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">Order Not Found</div>
+      <div style="color: rgba(255,255,255,0.7);">Please check your Order ID and try again.</div>
+    </div>
+    
+    <div class="order-card" id="orderCard">
+      <div class="order-header">
+        <div>
+          <div class="order-id" id="displayOrderId">Order #SL1704123456ABC</div>
+          <div style="color: rgba(255,255,255,0.6); margin-top: 0.5rem;" id="orderDate">Created: Jan 2, 2025 at 3:45 PM</div>
+        </div>
+        <div class="order-status" id="orderStatus">Pending Payment</div>
+      </div>
+      
+      <div class="progress-section">
+        <div class="progress-title">Order Progress</div>
+        <div class="progress-steps">
+          <div class="progress-line">
+            <div class="progress-line-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle" id="step1">📝</div>
+            <div class="step-label" id="label1">Order Placed</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle" id="step2">💳</div>
+            <div class="step-label" id="label2">Payment Pending</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle" id="step3">⚡</div>
+            <div class="step-label" id="label3">Processing</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle" id="step4">📦</div>
+            <div class="step-label" id="label4">Delivered</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="timer-section" id="timerSection">
+        <div class="timer-title">⏰ Payment Window</div>
+        <div class="countdown" id="countdown">59:45</div>
+        <div class="timer-subtitle">Order will auto-cancel if payment not received</div>
+      </div>
+      
+      <div class="payment-section" id="paymentSection">
+        <div class="payment-card" id="cashappCard">
+          <div class="payment-method">
+            💰 CashApp Payment
+          </div>
+          <div class="payment-address" id="cashappAddress">$realmoneygettinnih</div>
+          <div class="payment-note">
+            <div class="payment-note-title">⚠️ IMPORTANT: Include this note with your payment:</div>
+            <div class="payment-note-text" id="cashappNote">SL1704123456ABC</div>
+          </div>
+          <button class="copy-btn" onclick="copyToClipboard('cashappNote')">📋 Copy Payment Note</button>
+          <div class="qr-section">
+            <div class="qr-code">CashApp QR</div>
+            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan to pay</div>
+          </div>
+        </div>
+        
+        <div class="payment-card" id="cryptoCard">
+          <div class="payment-method">
+            ₿ Bitcoin Payment
+          </div>
+          <div class="payment-address" id="cryptoAddress">bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul</div>
+          <div class="payment-note">
+            <div class="payment-note-title">⚠️ IMPORTANT: Include this memo with your transaction:</div>
+            <div class="payment-note-text" id="cryptoNote">SL1704123456ABC</div>
+          </div>
+          <button class="copy-btn" onclick="copyToClipboard('cryptoAddress')">📋 Copy BTC Address</button>
+          <div class="qr-section">
+            <div class="qr-code">BTC QR</div>
+            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan to pay</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="verification-section" id="verificationSection">
+        <div class="verification-spinner"></div>
+        <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">🔍 Verifying Payment</div>
+        <div style="color: rgba(255,255,255,0.7);">Scanning blockchain and payment networks...</div>
+        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 1rem;">This usually takes 30-60 seconds</div>
+      </div>
+      
+      <div class="success-section" id="successSection">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Payment Confirmed!</div>
+        <div class="success-message">Your order has been successfully processed and is being prepared for delivery.</div>
+        <div class="delivery-info">
+          <div style="font-weight: 600; margin-bottom: 0.5rem;">📱 Delivery Information</div>
+          <div style="color: rgba(255,255,255,0.8);">Your product will be delivered to your Telegram within 24 hours.</div>
+          <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 0.5rem;">Expected delivery: Within 2-24 hours</div>
+        </div>
+      </div>
+      
+      <div style="text-align: center;">
+        <a href="solo.html" class="back-btn">← Back to Store</a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentOrder = null;
+    let countdownInterval = null;
+    let verificationInterval = null;
+    
+    function trackOrder() {
+      const orderId = document.getElementById('orderIdInput').value.trim();
+      
+      if (!orderId) {
+        alert('Please enter an Order ID');
+        return;
+      }
+      
+      // Get order from localStorage
+      const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+      const order = purchases.find(p => p.orderId === orderId);
+      
+      if (!order) {
+        showError();
+        return;
+      }
+      
+      currentOrder = order;
+      displayOrder(order);
+    }
+    
+    function showError() {
+      document.getElementById('errorSection').style.display = 'block';
+      document.getElementById('orderCard').style.display = 'none';
+    }
+    
+    function displayOrder(order) {
+      document.getElementById('errorSection').style.display = 'none';
+      document.getElementById('orderCard').style.display = 'block';
+      
+      // Update order info
+      document.getElementById('displayOrderId').textContent = `Order #${order.orderId}`;
+      document.getElementById('orderDate').textContent = `Created: ${new Date(order.timestamp).toLocaleString()}`;
+      
+      // Update payment notes with order ID
+      document.getElementById('cashappNote').textContent = order.orderId;
+      document.getElementById('cryptoNote').textContent = order.orderId;
+      
+      // Update progress based on status
+      updateProgress(order.status);
+      
+      // Start verification checking if payment is pending
+      if (order.status === 'pending') {
+        startCountdown(order.expiresAt);
+        startPaymentVerification(order.orderId);
+      } else if (order.status === 'completed') {
+        showSuccess();
+      }
+    }
+    
+    function updateProgress(status) {
+      const steps = ['step1', 'step2', 'step3', 'step4'];
+      const labels = ['label1', 'label2', 'label3', 'label4'];
+      const statusEl = document.getElementById('orderStatus');
+      const progressFill = document.getElementById('progressFill');
+      
+      // Reset all steps
+      steps.forEach(step => {
+        document.getElementById(step).className = 'step-circle';
+      });
+      labels.forEach(label => {
+        document.getElementById(label).className = 'step-label';
+      });
+      
+      switch(status) {
+        case 'pending':
+          document.getElementById('step1').classList.add('completed');
+          document.getElementById('label1').classList.add('completed');
+          document.getElementById('step2').classList.add('active');
+          document.getElementById('label2').classList.add('active');
+          statusEl.textContent = 'Pending Payment';
+          statusEl.className = 'order-status status-pending';
+          progressFill.style.width = '25%';
+          break;
+          
+        case 'processing':
+          document.getElementById('step1').classList.add('completed');
+          document.getElementById('label1').classList.add('completed');
+          document.getElementById('step2').classList.add('completed');
+          document.getElementById('label2').classList.add('completed');
+          document.getElementById('step3').classList.add('active');
+          document.getElementById('label3').classList.add('active');
+          statusEl.textContent = 'Processing';
+          statusEl.className = 'order-status status-processing';
+          progressFill.style.width = '75%';
+          break;
+          
+        case 'completed':
+          steps.forEach(step => {
+            document.getElementById(step).classList.add('completed');
+          });
+          labels.forEach(label => {
+            document.getElementById(label).classList.add('completed');
+          });
+          statusEl.textContent = 'Completed';
+          statusEl.className = 'order-status status-completed';
+          progressFill.style.width = '100%';
+          break;
+          
+        case 'expired':
+          statusEl.textContent = 'Expired';
+          statusEl.className = 'order-status status-expired';
+          break;
+      }
+    }
+    
+    function startCountdown(expiresAt) {
+      const timerSection = document.getElementById('timerSection');
+      const countdown = document.getElementById('countdown');
+      
+      countdownInterval = setInterval(() => {
+        const now = new Date();
+        const expires = new Date(expiresAt);
+        const timeLeft = expires - now;
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          countdown.textContent = '00:00';
+          timerSection.style.background = 'rgba(255, 0, 0, 0.1)';
+          timerSection.style.borderColor = 'rgba(255, 0, 0, 0.2)';
+          updateProgress('expired');
+          return;
+        }
+        
+        const minutes = Math.floor(timeLeft / 60000);
+        const seconds = Math.floor((timeLeft % 60000) / 1000);
+        countdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+    
+    function startPaymentVerification(orderId) {
+      // Check every 10 seconds for payment
+      verificationInterval = setInterval(() => {
+        checkPaymentStatus(orderId);
+      }, 10000);
+      
+      // Also check immediately
+      setTimeout(() => checkPaymentStatus(orderId), 2000);
+    }
+    
+    function checkPaymentStatus(orderId) {
+      // Get updated order status
+      const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+      const order = purchases.find(p => p.orderId === orderId);
+      
+      if (order && order.status !== currentOrder.status) {
+        currentOrder = order;
+        
+        if (order.status === 'processing') {
+          showVerification();
+          // Simulate processing time
+          setTimeout(() => {
+            // Check again for completion
+            const updatedPurchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+            const updatedOrder = updatedPurchases.find(p => p.orderId === orderId);
+            if (updatedOrder && updatedOrder.status === 'completed') {
+              showSuccess();
+              clearInterval(verificationInterval);
+              clearInterval(countdownInterval);
+            }
+          }, 3000);
+        } else if (order.status === 'completed') {
+          showSuccess();
+          clearInterval(verificationInterval);
+          clearInterval(countdownInterval);
+        }
+        
+        updateProgress(order.status);
+      }
+    }
+    
+    function showVerification() {
+      document.getElementById('paymentSection').style.display = 'none';
+      document.getElementById('timerSection').style.display = 'none';
+      document.getElementById('verificationSection').style.display = 'block';
+      updateProgress('processing');
+    }
+    
+    function showSuccess() {
+      document.getElementById('paymentSection').style.display = 'none';
+      document.getElementById('timerSection').style.display = 'none';
+      document.getElementById('verificationSection').style.display = 'none';
+      document.getElementById('successSection').style.display = 'block';
+      updateProgress('completed');
+    }
+    
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        // Show feedback
+        const originalText = element.textContent;
+        element.textContent = 'Copied!';
+        element.style.color = '#00ff00';
+        
+        setTimeout(() => {
+          element.textContent = originalText;
+          element.style.color = '';
+        }, 2000);
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        alert('Copied to clipboard!');
+      });
+    }
+    
+    // Auto-load order if URL has order ID parameter
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('order');
+      
+      if (orderId) {
+        document.getElementById('orderIdInput').value = orderId;
+        trackOrder();
+      }
+    });
+    
+    // Allow Enter key to search
+    document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        trackOrder();
+      }
+    });
+  </script>
+</body>
+</html>
