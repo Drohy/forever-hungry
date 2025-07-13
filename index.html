@@ -463,7 +463,7 @@
       <div class="product-price">$200</div>
       <div class="product-description">Same Day Play - Learn the Art of the Punch (Get anything free online)<br>Master setup, delivery, and execution<br>Perfect for getting in motion and catching fast plays.</div>
       <div class="product-includes">Includes: Step-by-step walk-through of your first play.</div>
-      <a href="#" class="buy-button" onclick="goToCheckout('Punch Lessons', 200, 'punch-lessons-image.jpg', 'Same Day Play - Learn the Art of the Punch (Get anything free online)<br>Master setup, delivery, and execution<br>Perfect for getting in motion and catching fast plays.', 'Step-by-step walk-through of your first play.')">Buy Now</a>
+      <button class="buy-button" onclick="buyProduct('Punch Lessons', 200, 'punch-lessons-image.jpg', 'Same Day Play - Learn the Art of the Punch (Get anything free online)<br>Master setup, delivery, and execution<br>Perfect for getting in motion and catching fast plays.', 'Step-by-step walk-through of your first play.')">Buy Now</button>
     </div>
     
     <div class="product-card">
@@ -474,7 +474,7 @@
       <div class="product-price">$300</div>
       <div class="product-description">Same Day Play - Learn how to make $5K in 5 minutes with logs and transfers.<br>Real-time walk-through so you get results instantly.</div>
       <div class="product-includes">Includes: Walk-through of your first transfer play.</div>
-      <a href="#" class="buy-button" onclick="goToCheckout('Transfer Sauce', 300, 'transfer-sauce-image.jpg', 'Same Day Play - Learn how to make $5K in 5 minutes with logs and transfers.<br>Real-time walk-through so you get results instantly.', 'Walk-through of your first transfer play.')">Buy Now</a>
+      <button class="buy-button" onclick="buyProduct('Transfer Sauce', 300, 'transfer-sauce-image.jpg', 'Same Day Play - Learn how to make $5K in 5 minutes with logs and transfers.<br>Real-time walk-through so you get results instantly.', 'Walk-through of your first transfer play.')">Buy Now</button>
     </div>
     
     <div class="product-card">
@@ -485,7 +485,7 @@
       <div class="product-price">$200</div>
       <div class="product-description">Same Day Play - Learn How to Cook Up Some Glass.<br>Everything you need to know to chef it up clean and correct.</div>
       <div class="product-includes">Includes: Hands-on walk-through + Facetime call.</div>
-      <a href="#" class="buy-button" onclick="goToCheckout('Glass Sauce', 200, 'glass-sauce-image.jpg', 'Same Day Play - Learn How to Cook Up Some Glass.<br>Everything you need to know to chef it up clean and correct.', 'Hands-on walk-through + Facetime call.')">Buy Now</a>
+      <button class="buy-button" onclick="buyProduct('Glass Sauce', 200, 'glass-sauce-image.jpg', 'Same Day Play - Learn How to Cook Up Some Glass.<br>Everything you need to know to chef it up clean and correct.', 'Hands-on walk-through + Facetime call.')">Buy Now</button>
     </div>
     
     <div class="product-card">
@@ -496,7 +496,7 @@
       <div class="product-price">$300</div>
       <div class="product-description">Instant - System Hacks That Hit Every Time.<br>Learn rare plays, fast moves, and backdoor sauce.<br>Works on damn near any bank (legal glitch).</div>
       <div class="product-includes">Includes: Full walk-through of your first glitch plate.</div>
-      <a href="#" class="buy-button" onclick="goToCheckout('Glitch Sauce', 300, 'glitch-sauce-image.jpg', 'Instant - System Hacks That Hit Every Time.<br>Learn rare plays, fast moves, and backdoor sauce.<br>Works on damn near any bank (legal glitch).', 'Full walk-through of your first glitch plate.')">Buy Now</a>
+      <button class="buy-button" onclick="buyProduct('Glitch Sauce', 300, 'glitch-sauce-image.jpg', 'Instant - System Hacks That Hit Every Time.<br>Learn rare plays, fast moves, and backdoor sauce.<br>Works on damn near any bank (legal glitch).', 'Full walk-through of your first glitch plate.')">Buy Now</button>
     </div>
   </div>
   
@@ -505,24 +505,70 @@
   </footer>
   
   <script>
-    function goToCheckout(title, price, image, description, includes) {
+    function buyProduct(title, price, image, description, includes) {
+      console.log('buyProduct called with:', title, price, image, description, includes);
+      
+      // Clear any existing product data
+      localStorage.removeItem('selectedProduct');
+      sessionStorage.removeItem('selectedProduct');
+      
+      // Create product data object
       const productData = {
         title: title,
         price: price,
         image: image,
         description: description,
-        includes: includes
+        includes: includes,
+        timestamp: Date.now()
       };
       
-      sessionStorage.setItem('selectedProduct', JSON.stringify(productData));
+      console.log('Storing product data:', productData);
       
-      const currentOrigin = window.location.origin;
-      const currentPath = window.location.pathname.replace(/\/[^\/]*$/, '/');
-      
-      const checkoutUrl = `${currentOrigin}${currentPath}solobuy.html`;
-      
-      window.location.href = checkoutUrl;
+      // Store in both localStorage and sessionStorage for reliability
+      try {
+        localStorage.setItem('selectedProduct', JSON.stringify(productData));
+        sessionStorage.setItem('selectedProduct', JSON.stringify(productData));
+        
+        // Verify storage worked
+        const stored = localStorage.getItem('selectedProduct');
+        console.log('Verification - stored data:', stored);
+        
+        if (stored) {
+          console.log('Data stored successfully, redirecting...');
+          // Redirect to checkout page
+          window.location.href = 'solobuy.html';
+        } else {
+          console.error('Failed to store product data');
+          alert('Error storing product data. Please try again.');
+        }
+      } catch (error) {
+        console.error('Storage error:', error);
+        alert('Error: ' + error.message);
+      }
     }
+    
+    // Test function to check storage
+    function testStorage() {
+      try {
+        localStorage.setItem('test', 'working');
+        const test = localStorage.getItem('test');
+        localStorage.removeItem('test');
+        console.log('localStorage working:', test === 'working');
+        return test === 'working';
+      } catch (e) {
+        console.error('localStorage not working:', e);
+        return false;
+      }
+    }
+    
+    // Run test on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Page loaded');
+      const storageWorking = testStorage();
+      if (!storageWorking) {
+        console.error('Storage not working!');
+      }
+    });
   </script>
 </body>
 </html>
