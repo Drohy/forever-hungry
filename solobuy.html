@@ -255,18 +255,29 @@
       color: rgba(255, 255, 255, 0.4);
     }
     
+    .payment-methods {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
     .payment-method-card {
       background: rgba(0, 0, 0, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 2rem;
-      margin-bottom: 2rem;
       transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
     }
     
     .payment-method-card:hover {
       border-color: rgba(255, 0, 0, 0.2);
       background: rgba(255, 0, 0, 0.02);
+    }
+    
+    .payment-method-card.selected {
+      border-color: rgba(255, 0, 0, 0.5);
+      background: rgba(255, 0, 0, 0.05);
     }
     
     .payment-method-header {
@@ -307,6 +318,14 @@
       color: rgba(255, 255, 255, 0.6);
     }
     
+    .payment-method-content {
+      display: none;
+    }
+    
+    .payment-method-card.selected .payment-method-content {
+      display: block;
+    }
+    
     .payment-address {
       background: rgba(0, 0, 0, 0.5);
       padding: 1rem;
@@ -317,6 +336,20 @@
       margin: 1rem 0;
       border: 1px solid rgba(255, 0, 0, 0.2);
       position: relative;
+      text-align: center;
+    }
+    
+    .cashapp-username {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 1rem 0;
+      border: 1px solid rgba(0, 200, 0, 0.2);
+      position: relative;
+      text-align: center;
+      color: #00c800;
     }
     
     .copy-btn {
@@ -344,6 +377,17 @@
       padding: 1rem;
       margin: 1rem 0;
       color: #ffab00;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    .cashapp-warning {
+      background: rgba(0, 200, 0, 0.1);
+      border: 1px solid rgba(0, 200, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #00c800;
       font-size: 0.9rem;
       text-align: center;
     }
@@ -439,6 +483,13 @@
       background: linear-gradient(135deg, #ff1a1a 0%, #e60000 100%);
     }
     
+    .complete-purchase-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
     .security-notice {
       text-align: center;
       margin-top: 1.5rem;
@@ -448,6 +499,27 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+    }
+    
+    .apple-pay-btn {
+      background: #000;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .apple-pay-btn:hover {
+      background: #333;
     }
     
     @media (max-width: 768px) {
@@ -535,28 +607,76 @@
       
       <div class="form-section">
         <h3 class="section-title">Payment Method</h3>
-        <div class="payment-method-card">
-          <div class="payment-method-header">
-            <div class="payment-icon">
-              <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Bitcoin">
+        <div class="payment-methods">
+          <div class="payment-method-card" onclick="selectPaymentMethod('cashapp')">
+            <div class="payment-method-header">
+              <div class="payment-icon" style="background: #00d632;">
+                <span style="color: #fff; font-weight: bold; font-size: 1.2rem;">$</span>
+              </div>
+              <div class="payment-details">
+                <h3>CashApp</h3>
+                <p>Send payment via CashApp - Instant processing</p>
+              </div>
             </div>
-            <div class="payment-details">
-              <h3>Bitcoin Payment</h3>
-              <p>Secure blockchain payment - Auto-verified within 10 minutes</p>
+            
+            <div class="payment-method-content">
+              <div class="cashapp-username">$realmoneygettinnih</div>
+              
+              <div class="cashapp-warning">
+                💸 Send exactly the amount shown below to this CashApp tag. Include your order ID in the note.
+              </div>
+              
+              <button class="copy-btn" onclick="copyToClipboard('cashappUsername')">📋 Copy CashApp Tag</button>
             </div>
           </div>
-          
-          <div class="payment-address" id="btcAddress">bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul</div>
-          
-          <div class="payment-warning">
-            ⚠️ Send the EXACT amount shown in the order summary below. Our system automatically detects payments to this address.
+
+          <div class="payment-method-card" onclick="selectPaymentMethod('applepay')">
+            <div class="payment-method-header">
+              <div class="payment-icon" style="background: #000;">
+                <span style="color: #fff; font-size: 1.5rem;">🍎</span>
+              </div>
+              <div class="payment-details">
+                <h3>Apple Pay</h3>
+                <p>Quick and secure payment with Touch ID or Face ID</p>
+              </div>
+            </div>
+            
+            <div class="payment-method-content">
+              <div class="payment-warning">
+                📱 After placing your order, you'll receive payment instructions via email to complete your Apple Pay transaction.
+              </div>
+              
+              <button class="apple-pay-btn" onclick="initiateApplePay()">
+                🍎 Pay with Apple Pay
+              </button>
+            </div>
           </div>
-          
-          <button class="copy-btn" onclick="copyToClipboard('btcAddress')">📋 Copy Bitcoin Address</button>
-          
-          <div class="qr-section">
-            <div class="qr-code" id="qrCode">QR Code<br>Loading...</div>
-            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan with your Bitcoin wallet</div>
+
+          <div class="payment-method-card" onclick="selectPaymentMethod('bitcoin')">
+            <div class="payment-method-header">
+              <div class="payment-icon">
+                <img src="https://cdn.iconscout.com/icon/free/png-256/free-bitcoin-logo-icon-download-in-svg-png-gif-file-formats--cryptocurrency-crypto-currency-money-finance-pack-logos-icons-1747674.png" alt="Bitcoin">
+              </div>
+              <div class="payment-details">
+                <h3>Bitcoin Payment</h3>
+                <p>Secure blockchain payment - Auto-verified within 10 minutes</p>
+              </div>
+            </div>
+            
+            <div class="payment-method-content">
+              <div class="payment-address" id="btcAddress">bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul</div>
+              
+              <div class="payment-warning">
+                ⚠️ Send the EXACT amount shown in the order summary below. Our system automatically detects payments to this address.
+              </div>
+              
+              <button class="copy-btn" onclick="copyToClipboard('btcAddress')">📋 Copy Bitcoin Address</button>
+              
+              <div class="qr-section">
+                <div class="qr-code" id="qrCode">QR Code<br>Loading...</div>
+                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan with your Bitcoin wallet</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -568,7 +688,7 @@
           <span id="summaryPrice">$0.00</span>
         </div>
         <div class="summary-row">
-          <span>Bitcoin Network Fee</span>
+          <span>Processing Fee</span>
           <span>Included</span>
         </div>
         <div class="summary-total">
@@ -577,21 +697,21 @@
         </div>
       </div>
       
-      <button class="complete-purchase-btn" id="completePurchaseBtn">Place Order & Track Payment</button>
+      <button class="complete-purchase-btn" id="completePurchaseBtn" disabled>Select Payment Method</button>
       
       <div class="security-notice">
-        🔒 Payments are monitored via blockchain API for instant verification
+        🔒 All payments are secure and verified automatically
       </div>
     </div>
   </div>
   
   <script>
     let currentProduct = null;
+    let selectedPaymentMethod = null;
     
     function loadProductData() {
       console.log('Loading product data...');
       
-      // Try localStorage first, then sessionStorage
       let productData = localStorage.getItem('selectedProduct') || sessionStorage.getItem('selectedProduct');
       
       console.log('Raw product data:', productData);
@@ -601,7 +721,6 @@
           currentProduct = JSON.parse(productData);
           console.log('Parsed product data:', currentProduct);
           
-          // Populate product information
           const productImage = document.getElementById('productImage');
           const productTitle = document.getElementById('productTitle');
           const productPrice = document.getElementById('productPrice');
@@ -621,7 +740,6 @@
           if (summaryPrice) summaryPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
           if (totalPrice) totalPrice.textContent = '$' + (currentProduct.price || 0) + '.00';
           
-          // Generate QR code (simplified)
           generateQRCode(currentProduct.price);
           
           console.log('Product data loaded successfully');
@@ -637,12 +755,35 @@
       }
     }
     
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      
+      document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+      
+      const btn = document.getElementById('completePurchaseBtn');
+      btn.disabled = false;
+      
+      switch(method) {
+        case 'cashapp':
+          btn.textContent = 'Place Order & Send CashApp Payment';
+          break;
+        case 'applepay':
+          btn.textContent = 'Place Order & Pay with Apple Pay';
+          break;
+        case 'bitcoin':
+          btn.textContent = 'Place Order & Track Bitcoin Payment';
+          break;
+      }
+    }
+    
     function generateQRCode(amount) {
       const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
       const qrElement = document.getElementById('qrCode');
       
-      // In a real implementation, you'd use a QR code library
-      // For now, we'll show a placeholder
       qrElement.innerHTML = `<div style="font-size: 0.8rem; padding: 1rem;">Bitcoin Address<br>${address.substring(0, 20)}...<br><strong>$${amount}</strong></div>`;
     }
     
@@ -661,6 +802,7 @@
         status: 'pending',
         expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         btcAddress: 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul',
+        cashappTag: '$realmoneygettinnih',
         expectedAmount: product.price
       };
       
@@ -676,6 +818,22 @@
       }
     }
     
+    function processCashAppPayment(orderId, amount, email, telegram) {
+      alert(`Order #${orderId} created!\n\n💸 CashApp Payment Instructions:\n\n1. Send exactly $${amount} to: $realmoneygettinnih\n\n2. Include "${orderId}" in the payment note\n\n3. Your order will be processed within 1 hour after payment\n\n4. Track your order status on the tracking page\n\nRedirecting to order tracking now...`);
+      
+      setTimeout(() => {
+        window.location.href = `/track?order=${orderId}`;
+      }, 3000);
+    }
+    
+    function processApplePayPayment(orderId, amount, email, telegram) {
+      alert(`Order #${orderId} created!\n\n🍎 Apple Pay Instructions:\n\n1. Check your email (${email}) for Apple Pay payment link\n\n2. Complete payment using Touch ID or Face ID\n\n3. Your order will be processed immediately after payment\n\n4. Track your order status on the tracking page\n\nRedirecting to order tracking now...`);
+      
+      setTimeout(() => {
+        window.location.href = `/track?order=${orderId}`;
+      }, 3000);
+    }
+    
     function processBitcoinPayment(orderId, amount, email, telegram) {
       const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
       
@@ -686,12 +844,30 @@
       }, 3000);
     }
     
+    function initiateApplePay() {
+      if (!currentProduct) {
+        alert('Product information not found');
+        return;
+      }
+      
+      alert(`Apple Pay integration would be implemented here.\n\nAmount: $${currentProduct.price}\nProduct: ${currentProduct.title}\n\nFor this demo, this would connect to Apple Pay API.`);
+    }
+    
     function copyToClipboard(elementId) {
-      const element = document.getElementById(elementId);
-      const text = element.textContent;
+      let text = '';
+      
+      if (elementId === 'cashappUsername') {
+        text = '$realmoneygettinnih';
+      } else {
+        const element = document.getElementById(elementId);
+        text = element.textContent;
+      }
       
       navigator.clipboard.writeText(text).then(() => {
-        // Show feedback
+        const element = elementId === 'cashappUsername' ? 
+          document.querySelector('.cashapp-username') : 
+          document.getElementById(elementId);
+        
         const originalText = element.textContent;
         element.textContent = 'Copied!';
         element.style.color = '#00ff00';
@@ -703,7 +879,6 @@
           element.style.background = '';
         }, 2000);
       }).catch(() => {
-        // Fallback for older browsers
         const textArea = document.createElement('textarea');
         textArea.value = text;
         document.body.appendChild(textArea);
@@ -711,26 +886,29 @@
         document.execCommand('copy');
         document.body.removeChild(textArea);
         
-        alert('Address copied to clipboard!');
+        alert('Copied to clipboard!');
       });
     }
     
-    // Event listeners
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM loaded, initializing...');
       loadProductData();
       
-      // Complete purchase button
       document.getElementById('completePurchaseBtn').addEventListener('click', function() {
         console.log('Complete purchase button clicked');
         
         const email = document.getElementById('customerEmail').value.trim();
         const telegram = document.getElementById('customerTelegram').value.trim();
         
-        console.log('Form data:', { email, telegram, currentProduct });
+        console.log('Form data:', { email, telegram, currentProduct, selectedPaymentMethod });
         
         if (!email || !telegram) {
           alert('Please fill in all required fields');
+          return;
+        }
+        
+        if (!selectedPaymentMethod) {
+          alert('Please select a payment method');
           return;
         }
         
@@ -742,16 +920,26 @@
         const orderId = generateOrderId();
         const amount = currentProduct.price;
         
-        console.log('Processing order:', orderId, amount);
+        console.log('Processing order:', orderId, amount, selectedPaymentMethod);
         
-        const tracked = trackPurchase(orderId, currentProduct, 'bitcoin', email, telegram);
+        const tracked = trackPurchase(orderId, currentProduct, selectedPaymentMethod, email, telegram);
         
         if (!tracked) {
           alert('Error creating order. Please try again.');
           return;
         }
         
-        processBitcoinPayment(orderId, amount, email, telegram);
+        switch(selectedPaymentMethod) {
+          case 'cashapp':
+            processCashAppPayment(orderId, amount, email, telegram);
+            break;
+          case 'applepay':
+            processApplePayPayment(orderId, amount, email, telegram);
+            break;
+          case 'bitcoin':
+            processBitcoinPayment(orderId, amount, email, telegram);
+            break;
+        }
       });
     });
   </script>
