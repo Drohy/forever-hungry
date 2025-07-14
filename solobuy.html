@@ -413,6 +413,14 @@
       color: #000;
       font-weight: bold;
       font-size: 0.9rem;
+      overflow: hidden;
+    }
+    
+    .qr-code img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
     }
     
     .order-summary {
@@ -500,27 +508,6 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-    }
-    
-    .apple-pay-btn {
-      background: #000;
-      color: #fff;
-      border: 1px solid #333;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-    }
-    
-    .apple-pay-btn:hover {
-      background: #333;
     }
     
     @media (max-width: 768px) {
@@ -616,7 +603,7 @@
               </div>
               <div class="payment-details">
                 <h3>CashApp</h3>
-                <p>Send payment via CashApp - Instant processing</p>
+                <p>Send payment via CashApp - Manual verification within 1 hour</p>
               </div>
             </div>
             
@@ -628,34 +615,12 @@
               </div>
               
               <button class="copy-btn" onclick="copyToClipboard('cashappUsername')">📋 Copy CashApp Tag</button>
-            </div>
-          </div>
-
-          <div class="payment-method-card" onclick="selectPaymentMethod('applepay')">
-            <div class="payment-method-header">
-              <div class="payment-icon">
-                <img src="applepaylogo.jpg" alt="Apple Pay">
-              </div>
-              <div class="payment-details">
-                <h3>Apple Pay</h3>
-                <p>Quick and secure payment with Touch ID or Face ID</p>
-              </div>
-            </div>
-            
-            <div class="payment-method-content">
-              <div class="payment-warning">
-                📱 Complete payment instantly with Touch ID, Face ID, or passcode. Requires Safari browser on Apple device.
-              </div>
               
-              <button class="apple-pay-btn" onclick="initiateApplePay()" id="applePayBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                </svg>
-                Pay with Apple Pay
-              </button>
-              
-              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; margin-top: 0.5rem;">
-                Secure payment with Touch ID or Face ID
+              <div class="qr-section">
+                <div class="qr-code" id="cashappQrCode">
+                  <img src="" alt="CashApp QR Code">
+                </div>
+                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan to open CashApp</div>
               </div>
             </div>
           </div>
@@ -681,7 +646,9 @@
               <button class="copy-btn" onclick="copyToClipboard('btcAddress')">📋 Copy Bitcoin Address</button>
               
               <div class="qr-section">
-                <div class="qr-code" id="qrCode">QR Code<br>Loading...</div>
+                <div class="qr-code" id="qrCode">
+                  <img src="" alt="Bitcoin QR Code">
+                </div>
                 <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Scan with your Bitcoin wallet</div>
               </div>
             </div>
@@ -779,11 +746,6 @@
         case 'cashapp':
           btn.textContent = 'Place Order & Send CashApp Payment';
           break;
-        case 'applepay':
-          btn.textContent = 'Use Apple Pay Button Above';
-          btn.style.opacity = '0.6';
-          btn.style.cursor = 'not-allowed';
-          break;
         case 'bitcoin':
           btn.textContent = 'Place Order & Track Bitcoin Payment';
           break;
@@ -791,10 +753,27 @@
     }
     
     function generateQRCode(amount) {
-      const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
-      const qrElement = document.getElementById('qrCode');
+      const cashappQrElement = document.getElementById('cashappQrCode');
+      if (cashappQrElement) {
+        const cashappImg = cashappQrElement.querySelector('img');
+        if (cashappImg) {
+          cashappImg.src = 'https://cash.app/qr/$realmoneygettinnih';
+          cashappImg.onerror = function() {
+            this.parentElement.innerHTML = '<div style="font-size: 0.8rem; padding: 1rem; color: #666;">CashApp<br>$realmoneygettinnih</div>';
+          };
+        }
+      }
       
-      qrElement.innerHTML = `<div style="font-size: 0.8rem; padding: 1rem;">Bitcoin Address<br>${address.substring(0, 20)}...<br><strong>$${amount}</strong></div>`;
+      const qrElement = document.getElementById('qrCode');
+      if (qrElement) {
+        const qrImg = qrElement.querySelector('img');
+        if (qrImg) {
+          qrImg.src = 'bitcoinqrcodejpg';
+          qrImg.onerror = function() {
+            this.parentElement.innerHTML = '<div style="font-size: 0.8rem; padding: 1rem; color: #666;">Bitcoin Address<br>bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul<br><strong>$' + amount + '</strong></div>';
+          };
+        }
+      }
     }
     
     function generateOrderId() {
@@ -829,183 +808,21 @@
     }
     
     function processCashAppPayment(orderId, amount, email, telegram) {
-      alert(`Order #${orderId} created!\n\n💸 CashApp Payment Instructions:\n\n1. Send exactly $${amount} to: $realmoneygettinnih\n\n2. Include "${orderId}" in the payment note\n\n3. Your order will be processed within 1 hour after payment\n\n4. Track your order status on the tracking page\n\nRedirecting to order tracking now...`);
+      alert('Order #' + orderId + ' created!\n\n💸 CashApp Payment Instructions:\n\n1. Send exactly $' + amount + ' to: $realmoneygettinnih\n\n2. Include "' + orderId + '" in the payment note\n\n3. Your order will be processed within 1 hour after payment\n\n4. Track your order status on the tracking page\n\nRedirecting to order tracking now...');
       
       setTimeout(() => {
-        window.location.href = `/track?order=${orderId}`;
+        window.location.href = '/track?order=' + orderId;
       }, 3000);
-    }
-    
-    function processApplePayPayment(orderId, amount, email, telegram) {
-      // This function is now handled by the Apple Pay session
-      // Keeping for backward compatibility but not used in new flow
-      alert(`Order #${orderId} created!\n\n🍎 Apple Pay transaction completed successfully!\n\nAmount: ${amount}\nEmail: ${email}\nTelegram: ${telegram}\n\nRedirecting to order tracking...`);
-      
-      setTimeout(() => {
-        window.location.href = `/track?order=${orderId}`;
-      }, 2000);
     }
     
     function processBitcoinPayment(orderId, amount, email, telegram) {
       const address = 'bc1qsgxr8rdu3hnw9hfydvyd6h80nxhxydf8nu9kul';
       
-      alert(`Order #${orderId} created!\n\n₿ Bitcoin Payment Instructions:\n\n1. Send exactly $${amount} USD worth of Bitcoin to:\n${address}\n\n2. Payment will be automatically verified within 10 minutes\n\n3. You'll receive real-time updates on the tracking page\n\nRedirecting to order tracking now...`);
+      alert('Order #' + orderId + ' created!\n\n₿ Bitcoin Payment Instructions:\n\n1. Send exactly $' + amount + ' USD worth of Bitcoin to:\n' + address + '\n\n2. Payment will be automatically verified within 10 minutes\n\n3. You\'ll receive real-time updates on the tracking page\n\nRedirecting to order tracking now...');
       
       setTimeout(() => {
-        window.location.href = `/track?order=${orderId}`;
+        window.location.href = '/track?order=' + orderId;
       }, 3000);
-    }
-    
-    function initiateApplePay() {
-      if (!currentProduct) {
-        alert('Product information not found');
-        return;
-      }
-      
-      if (!window.ApplePaySession || !ApplePaySession.canMakePayments()) {
-        alert('Apple Pay is not available on this device or browser. Please use Safari on an Apple device with Apple Pay set up.');
-        return;
-      }
-      
-      const request = {
-        countryCode: 'US',
-        currencyCode: 'USD',
-        supportedNetworks: ['visa', 'masterCard', 'amex', 'discover'],
-        merchantCapabilities: ['supports3DS'],
-        total: {
-          label: `Sauce Lessons - ${currentProduct.title}`,
-          amount: currentProduct.price.toString(),
-          type: 'final'
-        },
-        lineItems: [
-          {
-            label: currentProduct.title,
-            amount: currentProduct.price.toString(),
-            type: 'final'
-          }
-        ],
-        requiredBillingContactFields: ['email'],
-        requiredShippingContactFields: []
-      };
-      
-      const session = new ApplePaySession(3, request);
-      
-      session.onvalidatemerchant = function(event) {
-        console.log('Validating Apple Pay merchant...');
-        
-        fetch('/api/apple-pay/validate-merchant', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            validationURL: event.validationURL,
-            displayName: 'Sauce Lessons'
-          })
-        })
-        .then(response => response.json())
-        .then(merchantSession => {
-          session.completeMerchantValidation(merchantSession);
-        })
-        .catch(error => {
-          console.error('Merchant validation failed:', error);
-          session.abort();
-          alert('Apple Pay setup error. Please try another payment method.');
-        });
-      };
-      
-      session.onpaymentauthorized = function(event) {
-        console.log('Apple Pay payment authorized:', event.payment);
-        
-        const paymentData = {
-          token: event.payment.token,
-          billingContact: event.payment.billingContact,
-          amount: currentProduct.price,
-          currency: 'USD',
-          orderId: generateOrderId(),
-          productId: currentProduct.title,
-          customerEmail: document.getElementById('customerEmail').value.trim(),
-          customerTelegram: document.getElementById('customerTelegram').value.trim()
-        };
-        
-        processApplePayPayment(paymentData)
-          .then(result => {
-            if (result.success) {
-              session.completePayment(ApplePaySession.STATUS_SUCCESS);
-              
-              trackPurchase(result.orderId, currentProduct, 'applepay', paymentData.customerEmail, paymentData.customerTelegram);
-              
-              alert(`✅ Apple Pay Payment Successful!\n\nOrder #${result.orderId} created.\nTransaction ID: ${result.transactionId}\n\nRedirecting to order tracking...`);
-              
-              setTimeout(() => {
-                window.location.href = `/track?order=${result.orderId}`;
-              }, 2000);
-              
-            } else {
-              session.completePayment(ApplePaySession.STATUS_FAILURE);
-              alert('Payment processing failed: ' + result.error);
-            }
-          })
-          .catch(error => {
-            console.error('Payment processing error:', error);
-            session.completePayment(ApplePaySession.STATUS_FAILURE);
-            alert('Payment processing failed. Please try again.');
-          });
-      };
-      
-      session.oncancel = function(event) {
-        console.log('Apple Pay session cancelled');
-      };
-      
-      session.begin();
-    }
-    
-    async function processApplePayPayment(paymentData) {
-      try {
-        const response = await fetch('/api/apple-pay/process-payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(paymentData)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Payment processing failed: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        return result;
-        
-      } catch (error) {
-        console.error('Apple Pay processing error:', error);
-        
-        return simulateApplePayPayment(paymentData);
-      }
-    }
-    
-    function simulateApplePayPayment(paymentData) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const success = Math.random() > 0.1;
-          
-          if (success) {
-            const transactionId = 'ap_' + Math.random().toString(36).substr(2, 16);
-            resolve({
-              success: true,
-              orderId: paymentData.orderId,
-              transactionId: transactionId,
-              amount: paymentData.amount,
-              currency: paymentData.currency
-            });
-          } else {
-            resolve({
-              success: false,
-              error: 'Payment declined by bank'
-            });
-          }
-        }, 2000);
-      });
     }
     
     function copyToClipboard(elementId) {
@@ -1087,11 +904,6 @@
         switch(selectedPaymentMethod) {
           case 'cashapp':
             processCashAppPayment(orderId, amount, email, telegram);
-            break;
-          case 'applepay':
-            // Apple Pay is handled directly by the Apple Pay button
-            // This case should not be reached in normal flow
-            alert('Please use the Apple Pay button above to complete your payment.');
             break;
           case 'bitcoin':
             processBitcoinPayment(orderId, amount, email, telegram);
